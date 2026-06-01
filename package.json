@@ -1,0 +1,20 @@
+{
+  "name": "base-agentguard",
+  "version": "0.1.0",
+  "description": "Open-source Base AI agent safety studio for MCP send_calls planning, x402 intent review, and wallet action risk checks.",
+  "type": "module",
+  "private": false,
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "validate": "node tools/validate.mjs"
+  },
+  "keywords": [
+    "base",
+    "base-mcp",
+    "ai-agents",
+    "x402",
+    "wallet-safety",
+    "open-source"
+  ],
+  "license": "MIT"
+}

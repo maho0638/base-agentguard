@@ -1,0 +1,20 @@
+{
+  "project": "Base AgentGuard",
+  "network": "Base Sepolia",
+  "chain": "base-sepolia",
+  "chainId": 84532,
+  "action": "x402",
+  "asset": "USDC",
+  "amount": "0.10",
+  "maxPayment": "0.10",
+  "builderCode": "bc_a1b2c3d4",
+  "target": "https://example.com/api/report",
+  "riskScore": 36,
+  "baseMcpTool": "initiate_x402_request",
+  "x402": {
+    "url": "https://example.com/api/report",
+    "method": "GET",
+    "maxPayment": "0.10",
+    "completeWith": "complete_x402_request(requestId) after Base Account approval"
+  }
+}

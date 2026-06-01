@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Base AgentGuard is an open-source safety studio for Base MCP agents, send_calls planning, x402 payments, and wallet action review."
+    />
+    <title>Base AgentGuard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Base MCP agent safety studio</p>
+          <h1>Base AgentGuard</h1>
+          <p>
+            Plan AI wallet actions before approval: inspect Base RPC health, score
+            agent intent risk, and export a Base MCP send_calls-ready receipt.
+          </p>
+        </div>
+        <div class="network-panel" aria-label="Base network health">
+          <div class="panel-head">
+            <div>
+              <p class="label">Network</p>
+              <select id="networkSelect">
+                <option value="base">Base mainnet</option>
+                <option value="base-sepolia">Base Sepolia</option>
+              </select>
+            </div>
+            <button id="refreshNetwork" class="icon-button" title="Refresh network">
+              R
+            </button>
+          </div>
+          <dl class="health-grid">
+            <div>
+              <dt>Chain ID</dt>
+              <dd id="chainId">--</dd>
+            </div>
+            <div>
+              <dt>Latest block</dt>
+              <dd id="latestBlock">--</dd>
+            </div>
+            <div>
+              <dt>Gas price</dt>
+              <dd id="gasPrice">--</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd id="rpcStatus">Waiting</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form id="intentForm" class="tool-panel">
+          <div class="section-title">
+            <p class="label">Intent builder</p>
+            <h2>Describe the agent action</h2>
+          </div>
+
+          <label>
+            Action type
+            <select id="actionType">
+              <option value="send">Send tokens</option>
+              <option value="swap">Swap tokens</option>
+              <option value="contract">Execute contract call</option>
+              <option value="sign">Sign message or typed data</option>
+              <option value="x402">Pay x402 API</option>
+            </select>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Asset
+              <input id="asset" value="USDC" maxlength="24" />
+            </label>
+            <label>
+              Amount
+              <input id="amount" inputmode="decimal" value="1" />
+            </label>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              x402 max payment
+              <input id="maxPayment" inputmode="decimal" value="0.10" />
+            </label>
+            <label>
+              Builder Code
+              <input id="builderCode" placeholder="bc_a1b2c3d4" />
+            </label>
+          </div>
+
+          <label>
+            Recipient or counterparty
+            <input id="recipient" placeholder="vitalik.eth, cb.id name, or 0x..." />
+          </label>
+
+          <label>
+            Contract or API endpoint
+            <input id="target" placeholder="0x contract, protocol API, or payment URL" />
+          </label>
+
+          <label>
+            Agent note or calldata summary
+            <textarea
+              id="notes"
+              rows="5"
+              placeholder="Example: approve USDC then deposit into a Base vault using send_calls"
+            ></textarea>
+          </label>
+
+          <div class="button-row">
+            <button type="submit">Score intent</button>
+            <button id="loadExample" type="button" class="secondary">Load Base MCP example</button>
+          </div>
+        </form>
+
+        <section class="results-panel" aria-live="polite">
+          <div class="score-card">
+            <p class="label">Risk score</p>
+            <div class="score-line">
+              <strong id="riskScore">0</strong>
+              <span id="riskLevel">Not scored</span>
+            </div>
+            <div class="meter" aria-hidden="true">
+              <span id="riskMeter"></span>
+            </div>
+          </div>
+
+          <div class="findings">
+            <p class="label">Findings</p>
+            <ul id="findingsList"></ul>
+          </div>
+
+          <div class="output-block">
+            <div class="panel-head">
+              <div>
+                <p class="label">Base MCP receipt</p>
+                <h2>send_calls preview</h2>
+              </div>
+              <button id="copyReceipt" class="secondary" type="button">Copy</button>
+            </div>
+            <pre id="receiptOutput">{}</pre>
+          </div>
+        </section>
+      </section>
+
+      <section class="proof-strip">
+        <article>
+          <p class="label">Base fit</p>
+          <h3>Built around Base MCP</h3>
+          <p>
+            Mirrors the docs pattern: detect wallet, prepare unsigned calldata,
+            map it into send_calls, and require user approval for every write.
+          </p>
+        </article>
+        <article>
+          <p class="label">OSS fit</p>
+          <h3>Maintainer-first workflows</h3>
+          <p>
+            Includes a plugin spec, contract sketch, examples, roadmap, and
+            contribution docs so it can become a real public repo.
+          </p>
+        </article>
+        <article>
+          <p class="label">Airdrop posture</p>
+          <h3>Useful Base activity</h3>
+          <p>
+            Focuses on building, documenting, testing, and deploying on Base
+            instead of relying on fake claim links or speculative shortcuts.
+          </p>
+        </article>
+      </section>
+
+      <section class="evidence-matrix">
+        <div class="section-title">
+          <p class="label">Evidence pack</p>
+          <h2>What reviewers should see immediately</h2>
+        </div>
+        <div class="evidence-grid">
+          <article>
+            <strong>Base MCP</strong>
+            <span>Wallet detection, send_calls mapping, approval-first UX</span>
+          </article>
+          <article>
+            <strong>x402</strong>
+            <span>HTTPS endpoint review, max USDC cap, external-data warnings</span>
+          </article>
+          <article>
+            <strong>Builder Codes</strong>
+            <span>Agent attribution plan for Base.dev analytics and discovery</span>
+          </article>
+          <article>
+            <strong>Base deploy</strong>
+            <span>Sepolia proof contract, Basescan verification checklist</span>
+          </article>
+          <article>
+            <strong>OpenAI OSS</strong>
+            <span>Maintainer workflow, issue triage, PR review, release automation</span>
+          </article>
+          <article>
+            <strong>Trust</strong>
+            <span>No custody, no seed phrase, no hidden execution, bounded approvals</span>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

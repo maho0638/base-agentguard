@@ -1,0 +1,25 @@
+{
+  "requiredChecks": [
+    "Complete Base MCP onboarding and get_wallets detection first.",
+    "Show wallet address, chain, action, token, amount, recipient, and target before approval.",
+    "Every send, swap, sign, x402 payment, and contract call must require explicit user approval.",
+    "Prefer bounded approvals and explain why each call is needed before send_calls."
+  ],
+  "highRiskTerms": [
+    "approve",
+    "approval",
+    "unlimited",
+    "permit",
+    "delegatecall",
+    "upgrade",
+    "bridge",
+    "admin",
+    "proxy",
+    "claim",
+    "airdrop",
+    "drain",
+    "setapprovalforall",
+    "multicall",
+    "owner"
+  ]
+}

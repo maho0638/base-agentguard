@@ -1,0 +1,30 @@
+{
+  "project": "Base AgentGuard",
+  "network": "Base mainnet",
+  "chain": "base",
+  "chainId": 8453,
+  "action": "contract",
+  "asset": "USDC",
+  "amount": "25",
+  "maxPayment": null,
+  "builderCode": "bc_a1b2c3d4",
+  "recipient": "builder.base.eth",
+  "target": "0x1111111111111111111111111111111111111111",
+  "riskScore": 64,
+  "baseMcpTool": "send_calls",
+  "send_calls": {
+    "chain": "base",
+    "calls": [
+      {
+        "to": "0x1111111111111111111111111111111111111111",
+        "value": "0x0",
+        "data": "0x7c8e4d12"
+      }
+    ]
+  },
+  "builderCodeAttribution": {
+    "code": "bc_a1b2c3d4",
+    "standard": "ERC-8021 dataSuffix",
+    "note": "Append through a wallet/client capability after registering on Base.dev."
+  }
+}
