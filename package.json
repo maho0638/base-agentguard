@@ -5,9 +5,10 @@
   "type": "module",
   "private": false,
   "scripts": {
-    "start": "node tools/serve.mjs",
-    "validate": "node tools/validate.mjs"
-  },
+  "start": "node tools/serve.mjs",
+  "test": "node tests/risk-rules.test.mjs",
+  "validate": "node tools/validate.mjs"
+},
   "keywords": [
     "base",
     "base-mcp",
