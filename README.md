@@ -5,6 +5,9 @@ Live demo: https://maho0638.github.io/base-agentguard/
 Repository: https://github.com/maho0638/base-agentguard
 
 Base Sepolia proof contract: https://sepolia.basescan.org/address/0xc47E81c28606361d315D58cd2D8c1546Ffd09761
+Builder Code: `bc_q97md7tt`
+
+Builder wallet: `0x829CEcfe65bD215f15c7d57a261126913E0F8F95`
 
 Base AgentGuard is an open-source safety studio for AI agents that use Base MCP.
 It helps builders review wallet actions before approval, score risky agent
