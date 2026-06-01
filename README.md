@@ -1,4 +1,7 @@
 # Base AgentGuard
+Live demo: https://maho0638.github.io/base-agentguard/
+
+Repository: https://github.com/maho0638/base-agentguard
 
 Base AgentGuard is an open-source safety studio for AI agents that use Base MCP.
 It helps builders review wallet actions before approval, score risky agent
