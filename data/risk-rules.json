@@ -20,6 +20,12 @@
     "drain",
     "setapprovalforall",
     "multicall",
-    "owner"
+    "owner",
+    "eip-712",
+    "typeddata",
+    "verifyingcontract",
+    "spender",
+    "deadline",
+    "signature"
   ]
 }

@@ -12,6 +12,8 @@ const required = [
   "data/risk-rules.json",
   "examples/send-calls.receipt.json",
   "examples/x402.receipt.json",
+  "examples/eip712.receipt.json",
+  "tests/risk-rules.test.mjs",
   "plugins/base-agentguard.md",
   "contracts/BaseAgentIntentRegistry.sol",
   "docs/base-build-notes.md",
@@ -48,6 +50,12 @@ if (x402.baseMcpTool !== "initiate_x402_request" || !x402.x402.maxPayment) {
   process.exit(1);
 }
 
+const eip712 = JSON.parse(readFileSync("examples/eip712.receipt.json", "utf8"));
+if (eip712.baseMcpTool !== "sign_typed_data" || !eip712.typedDataReview.verifyingContract) {
+  console.error("EIP-712 example must include sign_typed_data and verifyingContract");
+  process.exit(1);
+}
+
 const plugin = readFileSync("plugins/base-agentguard.md", "utf8");
 for (const phrase of ["get_wallets", "send_calls", "base-sepolia", "x402"]) {
   if (!plugin.includes(phrase)) {
@@ -60,6 +68,14 @@ const app = readFileSync("app.js", "utf8");
 for (const phrase of ["builderCode", "initiate_x402_request", "maxPayment"]) {
   if (!app.includes(phrase)) {
     console.error(`app missing ${phrase}`);
+    process.exit(1);
+  }
+}
+
+const tests = readFileSync("tests/risk-rules.test.mjs", "utf8");
+for (const phrase of ["highRiskTerms", "maxPayment", "send_calls", "Builder Code", "EIP-712"]) {
+  if (!tests.includes(phrase)) {
+    console.error(`tests missing ${phrase}`);
     process.exit(1);
   }
 }

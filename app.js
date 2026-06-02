@@ -43,6 +43,7 @@ const els = {
   target: document.querySelector("#target"),
   notes: document.querySelector("#notes"),
   loadExample: document.querySelector("#loadExample"),
+  loadTypedDataExample: document.querySelector("#loadTypedDataExample"),
   riskScore: document.querySelector("#riskScore"),
   riskLevel: document.querySelector("#riskLevel"),
   riskMeter: document.querySelector("#riskMeter"),
@@ -131,6 +132,48 @@ function pseudoCalldata(seed) {
   return `0x${(hash >>> 0).toString(16).padStart(8, "0")}`;
 }
 
+function tryParseJson(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function findDeepValue(value, keys) {
+  if (!value || typeof value !== "object") return null;
+  for (const key of keys) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) return value[key];
+  }
+  for (const child of Object.values(value)) {
+    const found = findDeepValue(child, keys);
+    if (found !== null && found !== undefined) return found;
+  }
+  return null;
+}
+
+function buildTypedDataReview(notes) {
+  const parsed = tryParseJson(notes);
+  if (!parsed) return null;
+  const typedData = parsed.domain || parsed.types || parsed.message ? parsed : parsed.typedData;
+  if (!typedData || typeof typedData !== "object") return null;
+
+  const domain = typedData.domain || {};
+  const message = typedData.message || {};
+  return {
+    standard: "EIP-712",
+    domainName: domain.name || null,
+    chainId: Number(domain.chainId || typedData.chainId || 0) || null,
+    verifyingContract: domain.verifyingContract || null,
+    spender: findDeepValue(message, ["spender", "operator", "delegate", "to"]),
+    owner: findDeepValue(message, ["owner", "from", "holder"]),
+    value: findDeepValue(message, ["value", "amount", "limit"]),
+    nonce: findDeepValue(message, ["nonce"]),
+    deadline: findDeepValue(message, ["deadline", "expiry", "expiration"]),
+    messageKeys: Object.keys(message),
+  };
+}
+
 function scoreIntent(intent) {
   const findings = [...rules.requiredChecks];
   let score = 8;
@@ -174,6 +217,26 @@ function scoreIntent(intent) {
   }
 
   if (intent.actionType === "sign") {
+    const typedDataReview = buildTypedDataReview(intent.notes);
+    if (typedDataReview) {
+      findings.push("EIP-712 typed data detected; review domain, chainId, verifyingContract, spender, deadline, and value before signing.");
+      if (!typedDataReview.chainId) {
+        score += 12;
+        findings.push("Typed data is missing a visible chainId.");
+      }
+      if (typedDataReview.chainId && typedDataReview.chainId !== networks[els.networkSelect.value].chainId) {
+        score += 16;
+        findings.push("Typed data chainId does not match the selected Base network.");
+      }
+      if (!typedDataReview.verifyingContract) {
+        score += 12;
+        findings.push("Typed data is missing verifyingContract.");
+      }
+      if (!typedDataReview.deadline) {
+        score += 8;
+        findings.push("Typed data has no visible deadline or expiry.");
+      }
+    }
     findings.push("Never convert a signing request into send_calls; use sign or typed-data flows.");
   }
 
@@ -235,6 +298,20 @@ function buildReceipt(intent, score) {
   };
 
   if (intent.actionType === "sign") {
+    const typedDataReview = buildTypedDataReview(intent.notes);
+    if (typedDataReview) {
+      return {
+        ...base,
+        baseMcpTool: "sign_typed_data",
+        typedDataReview,
+        safetyChecks: [
+          "Confirm domain name and verifyingContract before signing.",
+          "Confirm chainId matches the selected Base network.",
+          "Confirm spender/operator, value, nonce, and deadline.",
+          "Never treat a signature as a harmless login if it can authorize token movement.",
+        ],
+      };
+    }
     return {
       ...base,
       baseMcpTool: "sign",
@@ -335,6 +412,47 @@ els.loadExample.addEventListener("click", () => {
   els.target.value = "0x1111111111111111111111111111111111111111";
   els.notes.value =
     "Prepare a Base MCP custom plugin batch: check wallet, approve bounded USDC, then call a vault with send_calls after user approval.";
+  scoreAndRender();
+});
+els.loadTypedDataExample.addEventListener("click", () => {
+  els.networkSelect.value = "base-sepolia";
+  els.actionType.value = "sign";
+  els.asset.value = "USDC";
+  els.amount.value = "0";
+  els.maxPayment.value = "0.10";
+  els.builderCode.value = "bc_q97md7tt";
+  els.recipient.value = "0x829CEcfe65bD215f15c7d57a261126913E0F8F95";
+  els.target.value = "0x1111111111111111111111111111111111111111";
+  els.notes.value = JSON.stringify(
+    {
+      domain: {
+        name: "Example Base Permit",
+        version: "1",
+        chainId: 84532,
+        verifyingContract: "0x1111111111111111111111111111111111111111",
+      },
+      types: {
+        Permit: [
+          { name: "owner", type: "address" },
+          { name: "spender", type: "address" },
+          { name: "value", type: "uint256" },
+          { name: "nonce", type: "uint256" },
+          { name: "deadline", type: "uint256" },
+        ],
+      },
+      primaryType: "Permit",
+      message: {
+        owner: "0x829CEcfe65bD215f15c7d57a261126913E0F8F95",
+        spender: "0x2222222222222222222222222222222222222222",
+        value: "1000000",
+        nonce: "0",
+        deadline: "1767225600",
+      },
+    },
+    null,
+    2,
+  );
+  refreshNetwork();
   scoreAndRender();
 });
 els.copyReceipt.addEventListener("click", async () => {

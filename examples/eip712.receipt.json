@@ -1,0 +1,32 @@
+{
+  "project": "Base AgentGuard",
+  "network": "Base Sepolia",
+  "chain": "base-sepolia",
+  "chainId": 84532,
+  "action": "sign",
+  "asset": "USDC",
+  "amount": "0",
+  "builderCode": "bc_q97md7tt",
+  "recipient": "0x829CEcfe65bD215f15c7d57a261126913E0F8F95",
+  "target": "0x1111111111111111111111111111111111111111",
+  "riskScore": 40,
+  "baseMcpTool": "sign_typed_data",
+  "typedDataReview": {
+    "standard": "EIP-712",
+    "domainName": "Example Base Permit",
+    "chainId": 84532,
+    "verifyingContract": "0x1111111111111111111111111111111111111111",
+    "spender": "0x2222222222222222222222222222222222222222",
+    "owner": "0x829CEcfe65bD215f15c7d57a261126913E0F8F95",
+    "value": "1000000",
+    "nonce": "0",
+    "deadline": "1767225600",
+    "messageKeys": ["owner", "spender", "value", "nonce", "deadline"]
+  },
+  "safetyChecks": [
+    "Confirm domain name and verifyingContract before signing.",
+    "Confirm chainId matches the selected Base network.",
+    "Confirm spender/operator, value, nonce, and deadline.",
+    "Never treat a signature as a harmless login if it can authorize token movement."
+  ]
+}
